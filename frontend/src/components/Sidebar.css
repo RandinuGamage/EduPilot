@@ -1,0 +1,30 @@
+.sidebar {
+    background-color: #1e293b;
+    color: white;
+    width: 250px;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  
+  .sidebar-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.25rem;
+  }
+  
+  .sidebar-link:hover {
+    background-color: #334155;
+  }

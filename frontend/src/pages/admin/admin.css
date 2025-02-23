@@ -1,0 +1,22 @@
+.admin-dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .dashboard-link {
+    background-color: #3b82f6;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 0.25rem;
+  }
+  
+  .dashboard-link:hover {
+    background-color: #2563eb;
+  }
