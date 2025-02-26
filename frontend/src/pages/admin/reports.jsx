@@ -1,5 +1,5 @@
 import React from 'react';
-import './Admin.css';
+import './admin.css';
 
 const Reports = () => {
   return (
