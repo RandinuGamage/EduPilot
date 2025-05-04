@@ -45,7 +45,7 @@ const registerUser = asyncHandler(async(req, res) => {
     if(role === 'student') {
         const student = new Student({
             user: user._id,
-            ID: user.ID,
+            StudentID: user.uniqueID,
             parentName,
             grade,
             address,
@@ -59,7 +59,7 @@ const registerUser = asyncHandler(async(req, res) => {
     if(role === 'teacher') {
         const teacher = new Teacher({
             user: user._id,
-            ID: user.ID,
+            TeacherID: user.uniqueID,
             qualification,
             subject,
             experience,
@@ -83,6 +83,7 @@ const registerUser = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             role: user.role, 
+            uniqueID: user.uniqueID,
             // token: genarateToken(user._id),
         });
     } else {
@@ -118,7 +119,8 @@ const loginUser = asyncHandler(async(req, res) => {
 //@route    GET /api/users/profile
 //@access   Private
 const getUserProfile = asyncHandler(async(req, res) => {
-    const {id, name, email, role} = await User.findById(req.user._id);
+    const {id, name, email, role} = await User.findById(req.params.id);
+    res.json({id, name, email, role});
 });
 
 //desc      Delete user
@@ -126,16 +128,37 @@ const getUserProfile = asyncHandler(async(req, res) => {
 //@access   Private (Admin only)
 const deleteUser = asyncHandler(async(req, res) => {
     
-    const user = await User.findById(req.user._id); 
-    if(user) {
-        await user.remove();
-        res.json({message: 'User removed successfully'});
-    } else {
-        res.status(404);
-        throw new Error('User not found');
-    }
+    try {
+        const user = await User.findById(req.params.id);
+        
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
     
-});
+        const deletedUser = await User.findOneAndDelete({ _id: user._id });
+    
+        res.status(200).json({
+          success: true,
+          message: 'User deleted successfully',
+          deletedUser: {
+            id: deletedUser._id,
+            name: deletedUser.name,
+            email: deletedUser.email,
+            role: deletedUser.role
+          }
+        });
+    
+      } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({
+          error: 'Internal server error',
+          message: error.message
+        });
+      }
+    });
+
+    
+
 
 //desc      update user profile
 //@route    PUT /api/users/profile
@@ -143,7 +166,7 @@ const deleteUser = asyncHandler(async(req, res) => {
 const updateUserProfile = asyncHandler(async(req, res) => {
 
     const {name, email, password, role, parentName, grade, address, contactNumber, dateOfBirth, qualification, subject, experience } = req.body;
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.params.id);
     if(user) {
         user.name = req.body.name || user.name;
         user.email = req.body.email || user.email;
@@ -160,10 +183,10 @@ const updateUserProfile = asyncHandler(async(req, res) => {
             role: updatedUser.role,
             // token: genarateToken(updatedUser._id),
         });
-
+y
         // If the user is a student, update the student record
         if (user.role === 'student') {
-            let student = await Student.findOne({ user: user._id });
+            let student = await Student.findOne({ user: user.id});
 
             if (!student) {
                 return res.status(404).json({ msg: 'Student record not found' });
@@ -180,7 +203,7 @@ const updateUserProfile = asyncHandler(async(req, res) => {
 
         // If the user is a teacher, update the teacher record
         if (user.role === 'teacher') {
-            let teacher = await Teacher.findOne({ user: user._id });
+            let teacher = await Teacher.findOne({ user: user.id });
 
             if (!teacher) {
                 return res.status(404).json({ msg: 'Teacher record not found' });

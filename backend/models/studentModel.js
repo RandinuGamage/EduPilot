@@ -6,6 +6,11 @@ const studentSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    StudentID: {
+        type: String,
+        ref: 'User',
+        required: true,
+    },
     parentName: {
         type: String,
         required: true,

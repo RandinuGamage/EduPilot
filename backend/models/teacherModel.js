@@ -7,6 +7,11 @@ const teacherSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
+    TeacherID: {
+        type: String,
+        ref: 'User',
+        required: true,
+    },
     qualification: {
         type: String,
         required: true,
@@ -16,7 +21,7 @@ const teacherSchema = new mongoose.Schema({
         required: true,
     },
     experience: {
-        type: Number,
+        type: String,
         required: true,
     },
     contactNumber: {
