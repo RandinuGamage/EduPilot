@@ -6,13 +6,13 @@ const { registerUser,
     deleteUser,
     updateUserProfile,
  } = require('../controllers/userController');
-const { protect, allowRoles } = require('../middleware/authMiddleware');
+const {allowRoles } = require('../middleware/authMiddleware');
 
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
-router.get('/profile',protect, getUserProfile);
-router.delete('/delete/:id', protect, allowRoles('admin'), deleteUser);
-router.put('/update/:id',protect, updateUserProfile);
+router.get('/profile/:id', getUserProfile);
+router.delete('/delete/:id', allowRoles('admin'), deleteUser);
+router.put('/update/:id',updateUserProfile);
 
 module.exports = router;

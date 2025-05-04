@@ -5,7 +5,7 @@ import './teacher.css';
 const TeacherDashboard = () => {
   return (
     <div className="teacher-dashboard">
-      <h1>Teacher Dashboard</h1>
+      <h1 style={{ textAlign: 'center' }}>Dashboard</h1>
       <div className="dashboard-links">
         <Link to="/teacher/attendance" className="dashboard-link">
           View Attendance

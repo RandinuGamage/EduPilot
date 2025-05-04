@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchClassesStart, fetchClassesSuccess, fetchClassesFailure } from '../../redux/slices/classSlice';
 import api from '../../services/api';
-import './Admin.css';
+import './admin.css';
 
 const MarkAttendance = () => {
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const MarkAttendance = () => {
   const handleMarkAttendance = async () => {
     try {
       await api.post('/attendance', {
-        classId: selectedClass._id,
+        ClassId: selectedClass.classId,
         attendance: Object.keys(attendance).map((studentId) => ({
           studentId,
           status: attendance[studentId],

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsersStart, fetchUsersSuccess, fetchUsersFailure, deleteUser } from '../../redux/slices/userSlice';
 import api from '../../services/api';
-import './Admin.css';
+import './admin.css';
 
 const UserManagement = () => {
   const dispatch = useDispatch();

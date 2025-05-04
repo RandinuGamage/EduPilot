@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchIncomeStart, fetchIncomeSuccess, fetchIncomeFailure } from '../../redux/slices/incomeSlice';
 import api from '../../services/api';
-import './Admin.css';
+import './admin.css';
 
 const Income = () => {
   const dispatch = useDispatch();

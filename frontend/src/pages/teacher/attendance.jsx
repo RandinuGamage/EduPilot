@@ -7,7 +7,8 @@ import './teacher.css';
 const Attendance = () => {
   const dispatch = useDispatch();
   const { attendance, loading, error } = useSelector((state) => state.attendance);
-  const { user } = useSelector((state) => state.auth);
+  const someSlice = useSelector(state => state.someSlice);
+  const user = someSlice?.user;
 
   useEffect(() => {
     const fetchAttendance = async () => {

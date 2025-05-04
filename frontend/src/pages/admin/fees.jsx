@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeesStart, fetchFeesSuccess, fetchFeesFailure } from '../../redux/slices/feeSlice';
 import api from '../../services/api';
-import './Admin.css';
+import './admin.css';
 
 const Fees = () => {
   const dispatch = useDispatch();

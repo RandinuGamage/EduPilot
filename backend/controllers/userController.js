@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+//const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
@@ -83,7 +83,7 @@ const registerUser = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             role: user.role, 
-            token: genarateToken(user._id),
+            // token: genarateToken(user._id),
         });
     } else {
         res.status(400);
@@ -105,7 +105,7 @@ const loginUser = asyncHandler(async(req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            token: genarateToken(user._id),
+            // token: genarateToken(user._id),
             
         });
     } else {
@@ -158,7 +158,7 @@ const updateUserProfile = asyncHandler(async(req, res) => {
             name: updatedUser.name,
             email: updatedUser.email,
             role: updatedUser.role,
-            token: genarateToken(updatedUser._id),
+            // token: genarateToken(updatedUser._id),
         });
 
         // If the user is a student, update the student record
@@ -211,9 +211,9 @@ module.exports = {
     updateUserProfile
 };
 
-const genarateToken = (id) => {
-    return jwt.sign({id}, process.env.JWT_SECRET, {
-        expiresIn: '30d'
-    });
-};
+// const genarateToken = (id) => {
+//     return jwt.sign({id}, process.env.JWT_SECRET, {
+//         expiresIn: '30d'
+//     });
+// };
 
