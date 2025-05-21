@@ -1,22 +1,53 @@
 .admin-dashboard {
-    padding: 1rem;
-  }
-  
-.dashboard-links {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
 }
 
-.dashboard-link {
-  background-color: #3b82f6;
-  color: white;
-  padding: 1rem;
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  color: #333;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.dashboard-card {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 1.5rem;
+  border-radius: 8px;
   text-align: center;
   text-decoration: none;
-  border-radius: 0.25rem;
+  color: inherit;
+  transition: background-color 0.2s ease;
 }
 
-.dashboard-link:hover {
-  background-color: #2563eb;
+.dashboard-card:hover {
+  background-color: #e9ecef;
+}
+
+.dashboard-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.dashboard-card p {
+  margin-top: 0.5rem;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.register-card {
+  background-color: #007bff;
+  color: white;
+}
+
+.register-card:hover {
+  background-color: #0056b3;
 }

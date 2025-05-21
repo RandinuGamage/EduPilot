@@ -1,45 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaSignInAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginStart, loginSuccess, loginFailure } from '../../redux/slices/authSlice';
-import api from '../../services/api';
+import { toast } from 'react-toastify';
+import { login, reset } from '../../features/auth/authSlice';
+import Spinner from '../../components/Spinner';
 import './Auth.css';
-
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelector(state => state.someSlice?.loading || false);
-  const error = useSelector(state => state.someSlice?.error || null);
-  
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    dispatch(loginStart());
-    try {
-      const response = await api.post('/auth/login', { email, password });
-      localStorage.setItem('token', response.data.token);
-      dispatch(loginSuccess(response.data.user));
-      // Redirect based on role
-      if (response.data.user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (response.data.user.role === 'teacher') {
-        navigate('/teacher/dashboard');
-      }
-    } catch (err) {
-      dispatch(loginFailure(err.response.data.message));
+
+  const { user, isLoading, isError, message } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
     }
+
+    if (user) {
+      navigate('/');
+    }
+
+    return () => {
+      dispatch(reset());
+    };
+  }, [isError, user, message, navigate, dispatch]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!email || !password) {
+      toast.error('Please enter both email and password');
+      return;
+    }
+
+    dispatch(login({ email, password }));
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="auth-container">
       <h2>
-        <FaSignInAlt/> Login
+        <FaSignInAlt /> Login
       </h2>
-      {error && <p className="error">{error}</p>}
-      <form onSubmit={handleLogin} className="auth-form">
+
+      {isError && <p className="error">{message}</p>}
+
+      <form onSubmit={handleSubmit} className="auth-form">
         <div className="form-group">
           <label>Email</label>
           <input
@@ -50,6 +64,7 @@ const Login = () => {
             required
           />
         </div>
+
         <div className="form-group">
           <label>Password</label>
           <input
@@ -60,8 +75,9 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Logging in...' : 'Login'}
         </button>
       </form>
     </div>

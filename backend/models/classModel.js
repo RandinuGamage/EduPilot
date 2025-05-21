@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const classSchema = new mongoose.Schema({
     classId:{
         type: String,
-        required: true,
+        unique : true,
+        
     },
     className: {
         type: String,
@@ -14,16 +15,16 @@ const classSchema = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    schedule: {
-        day: {
+    
+    day: {
             type: String,
             required: true,
-        },
-        time: {
-            type: String,
-            required: true,
-        },
     },
+    time: {
+            type: String,
+            required: true,
+    },
+    
     classDays: [{ // Array of 4 days in a month
         type: Date,
         required: true,
@@ -39,20 +40,15 @@ const classSchema = new mongoose.Schema({
 });
 
 //Genarate classID
-classSchema.pre('save', async function(next){
-    if(!this.isModified('classID')){
-        next();
+classSchema.pre('save', async function (next) {
+    if (!this.classId) {
+        this.classId = [
+            'CLS',
+            Math.floor(1000 + Math.random() * 9000)
+        ].join('-');
     }
-    this.classId = await generateClassID();
     next();
 });
-
-// Function to generate unique classID
-const generateClassID = async () => {
-    let prefix = 'CLS'; // Prefix for class
-    let count = await Class.countDocuments();
-    return `${prefix}${count + 1}`;
-}
 
 module.exports = mongoose.model('Class', classSchema);
 

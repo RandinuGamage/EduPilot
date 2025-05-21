@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async(req, res) => {
     });
 
     //Save user
-    user = await user.save();
+    user =await user.save();
 
     // If user is a student
     if(role === 'student') {
@@ -147,6 +147,19 @@ const deleteUser = asyncHandler(async(req, res) => {
             role: deletedUser.role
           }
         });
+
+        if (user.role === 'student') {
+            const student = await Student.findOne({ user: user.id });
+            if (student) {
+                await Student.deleteOne({ user: user.id });
+            }
+        }
+        if (user.role === 'teacher') {
+            const teacher = await Teacher.findOne({ user: user.id });
+            if (teacher) {
+                await Teacher.deleteOne({ user: user.id });
+            }
+        }
     
       } catch (error) {
         console.error('Error deleting user:', error);

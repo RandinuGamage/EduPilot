@@ -3,7 +3,9 @@ import { useState, useEffect } from 'react';
 import { FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerStart, registerSuccess, registerFailure } from '../../redux/actions/authActions';
+import { toast} from 'react-toastify';
+import { register, reset } from '../../features/auth/authSlice';
+import Spinner from '../../components/Spinner';
 import api from '../../services/api';
 import './Auth.css';
 
@@ -13,9 +15,8 @@ function Register() {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('student'); // Default role is student
     const [subject, setSubject] = useState(''); // Only for teachers
-    const [className, setClassName] = useState(''); // Only for teachers
-    const [qulification, setQulification] = useState('') // Ony for teachers
-    const [experiance, setExperiance] = useState('') // Ony for teachers
+    const [qualification, setQualification] = useState('') // Ony for teachers
+    const [experience, setExperience] = useState('') // Ony for teachers
     const [parentName, setParentName] = useState(''); // Only for students
     const [grade, setGrade] = useState(''); // Only for students
     const [address, setAddress] = useState('') //Only for teachers and students
@@ -23,35 +24,59 @@ function Register() {
     const [dateOfBirth, setDateOfBirth] = useState('')
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { loading, error } = useSelector((state) => state.auth);
+
+
+    const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+    if (isError) {
+      toast.error(message)
+    }
+
+    if (isSuccess || user) {
+      navigate('/admin/dashboard')
+    }
+
+    dispatch(reset())
+  }, [user, isError, isSuccess, message, navigate, dispatch])
 
     const handleRegister = async (e) => {
         e.preventDefault();
-        dispatch(registerStart());
-        try {
-          const userData = { name, email, password, role };
-          if (role === 'teacher') {
-            userData.subject = subject;
-            userData.qulification = qulification;
-            userData.experiance = experiance;
-            userData.contactNumber = contactNumber;
-            userData.address = address;
-          } else if(role === 'student'){
-            userData.parentName = parentName;
-            userData.grade = grade;
-            userData.address = address;
-            userData.contactNumber = contactNumber;
-            userData.dateOfBirth = dateOfBirth;
+        const userData = {
+          name,
+          email,
+          password,
+          role,
+        };
 
-          }
-          const response = await api.post('/auth/register', userData);
-          localStorage.setItem('token', response.data.token);
-          dispatch(registerSuccess(response.data.user));
-          navigate('/admin/dashboard'); // Redirect to admin dashboard after registration
-        } catch (err) {
-          dispatch(registerFailure(err.response.data.message));
-        }
-      };
+      if (role === 'teacher') {
+        userData.subject = subject;
+        userData.qualification = qualification;
+        userData.experience = experience;
+        userData.contactNumber = contactNumber;
+        userData.address = address;
+      }
+
+      if (role === 'student') {
+        userData.parentName = parentName;
+        userData.grade = grade;
+        userData.address = address;
+        userData.contactNumber = contactNumber;
+        userData.dateOfBirth = dateOfBirth;
+      }
+
+      try {
+        await dispatch(register(userData)).unwrap();
+        // toast.success('Registration successful!');
+        // navigate('/admin/dashboard');
+      } catch (err) {
+        
+      }
+    };
+
+    if (isLoading) {
+      return <Spinner />
+    }
     
 
     return (
@@ -59,7 +84,7 @@ function Register() {
       <h2>
         <FaUser/> Register a new user
         </h2>
-      {error && <p className="error">{error}</p>}
+      {isError && <p className="error">{message}</p>}
       <form onSubmit={handleRegister} className="auth-form">
         <div className="form-group">
           <label>Name</label>
@@ -112,11 +137,11 @@ function Register() {
               />
             </div>
             <div className="form-group">
-              <label>Qulification</label>
+              <label>Qualification</label>
               <input
                 type="text"
-                value={qulification}
-                onChange={(e) => setQulification(e.target.value)}
+                value={qualification}
+                onChange={(e) => setQualification(e.target.value)}
                 required
               />
             </div>
@@ -124,8 +149,8 @@ function Register() {
               <label>Experiance</label>
               <input
                 type="text"
-                value={experiance}
-                onChange={(e) => setExperiance(e.target.value)}
+                value={experience}
+                onChange={(e) => setExperience(e.target.value)}
                 required
               />
             </div>
@@ -198,8 +223,8 @@ function Register() {
             </div>
           </>
         )}
-        <button type="submit" disabled={loading}>
-          {loading ? 'Registering...' : 'Register'}
+        <button type="submit" disabled={isLoading}>
+          {isLoading ? 'Registering...' : 'Register'}
         </button>
       </form>
     </div>

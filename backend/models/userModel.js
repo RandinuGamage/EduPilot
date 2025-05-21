@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     uniqueID : {
         type: String,
-        unique: true
+        unique: true,
     },
 },{
     timestamps: true
@@ -36,10 +37,20 @@ userSchema.pre('save', async function(next){
     const salt = await bcrypt.genSalt(12);
     this.password = await bcrypt.hash(this.password, salt);
 
-    if (!this.uniqueID) {
-        this.uniqueID = await generateUniqueID(this.role);
+});
+
+userSchema.pre('save', async function(next) {
+    console.log('pre save hook called');
+    if(!this.isNew || this.uniqueID) {
+        console.log('uniqueID already exists');
+        return next();
     }
-    next();
+    try {
+        this.uniqueID = await generateUniqueID(this.role);
+        next();
+    } catch (error) {
+        next(error);
+    }
 });
 
 userSchema.methods.matchPasswords = async function(password){
@@ -47,7 +58,7 @@ userSchema.methods.matchPasswords = async function(password){
 }
 
 // Function to generate unique ID
-const generateUniqueID = async (role) => {
+const generateUniqueID = async function(role) {
     let prefix;
     switch (role) {
         case 'admin':

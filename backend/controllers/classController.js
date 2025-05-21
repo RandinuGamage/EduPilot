@@ -7,7 +7,7 @@ const Attendance = require('../models/attendanceModel');
 // @route   POST /api/classes
 // @access  Private(Admin only)
 const createClass = async (req, res) => {
-    const { className, teacher, schedule } = req.body;
+    const { className, teacher, day, time, fee } = req.body;
 
     try {
         // Check if the teacher exists
@@ -19,15 +19,17 @@ const createClass = async (req, res) => {
 
         // Calculate class days based on the schedule
         const startDate = new Date(); // Use the current date as the starting point
-        const dayOfWeek = getDayOfWeek(schedule.day); // Convert day name to day number (0-6)
+        const dayOfWeek = getDayOfWeek(day); // Convert day name to day number (0-6)
         const classDays = getClassDays(startDate, dayOfWeek);
 
         // Create a new class
         const newClass = new Class({
             className,
             teacher,
-            schedule,
-            classDays, // Automatically calculated class days
+            day,
+            time,
+            classDays : classDays, // Automatically calculated class days
+            fee,
         });
 
         await newClass.save();
@@ -73,10 +75,10 @@ const assignTeacher = async (req, res) => {
 };
 
 // @desc    Add students to a class
-// @route   PUT /api/classes/:id/add-students
+// @route   PUT /api/classes/add-students/:id
 // @access  Private(Admin only)
 const addStudent = async (req, res) => {
-    const { students } = req.body;
+    const { student } = req.body;
 
     try {
         // Find the class
@@ -110,7 +112,7 @@ const addStudent = async (req, res) => {
 };
 
 // @desc    Remove student from a class
-// @route   PUT /api/classes/:id/remove-student
+// @route   PUT /api/classes/remove-student/:id
 // @access  Private(Admin only)
 const removeStudent = async (req, res) => {
     const { student } = req.body;

@@ -1,6 +1,6 @@
 import React from 'react';
 import {FaSignInAlt, FaSignOutAlt, FaUser} from 'react-icons/fa';
-import { logout } from '../redux/slices/authSlice';
+import { logout, reset } from '../features/auth/authSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector,  } from 'react-redux';
 import { Link } from 'react-router-dom';
